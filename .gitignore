@@ -1,0 +1,22 @@
+node_modules
+dist
+# Copied from node_modules/stockfish by the Vite plugin in vite.config.ts
+public/engine
+*.local
+
+# Android build output
+android/local.properties
+*.tsbuildinfo
+
+# Machine-learning working files (regenerable; the shipped models live in public/models)
+ml/data/
+ml/out/
+ml/.venv/
+__pycache__/
+
+# Local tool settings
+.claude/settings.local.json
+
+# Move sounds are not redistributable: add your own MP3s locally (see README)
+resources/audio/*.mp3
+public/sounds/*.mp3

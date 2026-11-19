@@ -1,0 +1,279 @@
+@import 'tailwindcss';
+
+/*
+ * BlunderLab design tokens. Every colour, radius, font and type size the app uses
+ * is defined here; components only reference these via Tailwind utilities
+ * (e.g. bg-surface-2, text-fg-muted, text-blunder, rounded-card) or var(--…).
+ */
+@theme static {
+  /* Typography */
+  --font-display: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1rem;
+  --text-hero: 2.5rem;
+  --text-hero--line-height: 1.05;
+
+  /* Surfaces: deep ink with layered elevation */
+  --color-ink: #07080b;
+  --color-canvas: #0c0e12;
+  --color-surface-1: #13161b;
+  --color-surface-2: #191d24;
+  --color-surface-3: #21262f;
+  --color-line: #2a303a;
+  --color-line-soft: #1e232b;
+
+  /* Text */
+  --color-fg: #eceef2;
+  --color-fg-muted: #a0a8b4;
+  /* Lifted slightly from #6c7480 so small text stays WCAG AA (>= 4.5:1) up to surface-3. */
+  --color-fg-subtle: #858d99;
+  /* A hairline a step stronger than `line`, for raised controls on surface-2/3. */
+  --color-line-strong: #343b47;
+
+  /* The one accent */
+  --color-accent: #6f95ff;
+  --color-accent-strong: #93b0ff;
+  --color-accent-ink: #0a1230;
+  --color-accent-soft: rgb(111 149 255 / 0.14);
+
+  /* Lichess puzzles: their own colour, so they never read as the owner's red "from your games" puzzles */
+  --color-lichess: #b49cff;
+  --color-lichess-soft: rgb(180 156 255 / 0.14);
+
+  /* Move quality (fixed semantic palette) */
+  --color-brilliant: #2cc6d8;
+  --color-great: #6f9fd0;
+  --color-best: #3cc893;
+  --color-excellent: #8cc46a;
+  --color-good: #93ab9f;
+  --color-book: #b08f6a;
+  --color-inaccuracy: #e9c45e;
+  --color-mistake: #f2924c;
+  --color-miss: #e07ccb;
+  --color-blunder: #f05d5d;
+
+  /* Results */
+  --color-win: #3cc893;
+  --color-draw: #a0a8b4;
+  --color-loss: #f05d5d;
+
+  /* Board */
+  --color-board-light: #dde2e9;
+  --color-board-dark: #7d8ea6;
+  --color-board-highlight: rgb(233 196 94 / 0.48);
+  --color-board-arrow: rgb(60 200 147 / 0.9);
+  --color-board-select: rgb(111 149 255 / 0.42);
+  --color-board-notation: #4a5870;
+  --color-eval-white: #eef0f3;
+  --color-eval-black: #2a2f37;
+
+  /* Radii */
+  --radius-chip: 8px;
+  --radius-control: 12px;
+  --radius-card: 18px;
+  --radius-sheet: 26px;
+
+  /* Layout */
+  --spacing-gutter: 1rem;
+  --spacing-tabbar: 4.25rem;
+  --container-app: 440px;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Elevation. Dark UIs read depth from a lit top edge more than from drop shadows. */
+  --shadow-raised: inset 0 1px 0 0 rgb(255 255 255 / 0.05), 0 1px 2px 0 rgb(0 0 0 / 0.35), 0 12px 28px -16px rgb(0 0 0 / 0.7);
+  --shadow-control: inset 0 1px 0 0 rgb(255 255 255 / 0.07), 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow-recessed: inset 0 1px 2px 0 rgb(0 0 0 / 0.45);
+}
+
+/*
+ * Surface levels (see Card). Plain CSS in the components layer so any utility a caller
+ * passes (bg-*, border-*, shadow-*) still wins, exactly as it did with the old classes.
+ *
+ * - base:    quiet, for lists and dense rows. Hairline + a faint lit top edge.
+ * - raised:  grouped content (the default Card). A soft top-down sheen and real depth.
+ * - feature: one key thing per screen. Tinted light from the top-right corner; set the
+ *            tint with a `tint-*` class (accent by default).
+ */
+@layer components {
+  .surface-base {
+    background-color: var(--color-surface-1);
+    border: 1px solid var(--color-line-soft);
+    box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.03);
+  }
+  .surface-raised {
+    background-color: var(--color-surface-1);
+    background-image: linear-gradient(180deg, rgb(255 255 255 / 0.03), rgb(255 255 255 / 0) 60%);
+    border: 1px solid var(--color-line-soft);
+    box-shadow: var(--shadow-raised);
+  }
+  .surface-raised-2 {
+    background-color: var(--color-surface-2);
+    background-image: linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(255 255 255 / 0) 60%);
+    border: 1px solid var(--color-line);
+    box-shadow: var(--shadow-raised);
+  }
+  .surface-feature {
+    background-color: var(--color-surface-1);
+    background-image:
+      radial-gradient(110% 85% at 100% 0%, color-mix(in oklab, var(--tint, var(--color-accent)) 17%, transparent), transparent 62%),
+      linear-gradient(160deg, color-mix(in oklab, var(--tint, var(--color-accent)) 10%, var(--color-surface-1)), var(--color-surface-1) 72%);
+    border: 1px solid color-mix(in oklab, var(--tint, var(--color-accent)) 24%, var(--color-line-soft));
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in oklab, var(--tint, var(--color-accent)) 26%, rgb(255 255 255 / 0.05)),
+      0 1px 2px 0 rgb(0 0 0 / 0.35),
+      0 20px 40px -24px color-mix(in oklab, var(--tint, var(--color-accent)) 40%, rgb(0 0 0 / 0.8));
+  }
+  /* A small tile that sits inside any surface (stat tiles, inline readouts). Translucent so tints show through. */
+  .surface-inset {
+    background-color: rgb(255 255 255 / 0.035);
+    border: 1px solid rgb(255 255 255 / 0.05);
+    box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.04);
+  }
+
+  .tint-accent {
+    --tint: var(--color-accent);
+  }
+  .tint-best,
+  .tint-win {
+    --tint: var(--color-best);
+  }
+  .tint-loss,
+  .tint-blunder {
+    --tint: var(--color-blunder);
+  }
+  .tint-draw {
+    --tint: var(--color-draw);
+  }
+  .tint-mistake {
+    --tint: var(--color-mistake);
+  }
+  .tint-inaccuracy {
+    --tint: var(--color-inaccuracy);
+  }
+  .tint-brilliant {
+    --tint: var(--color-brilliant);
+  }
+  .tint-miss {
+    --tint: var(--color-miss);
+  }
+  .tint-lichess {
+    --tint: var(--color-lichess);
+  }
+}
+
+/* Touch feedback. `pressable` for standalone controls, `press-row` for rows inside a surface. */
+@utility pressable {
+  transition-property: transform, background-color, border-color, color, box-shadow, opacity;
+  transition-duration: 160ms;
+  transition-timing-function: var(--ease-out-soft);
+  &:active {
+    transform: scale(0.975);
+  }
+}
+@utility press-row {
+  transition: background-color 160ms var(--ease-out-soft);
+  &:active {
+    background-color: rgb(255 255 255 / 0.045);
+  }
+  @media (hover: hover) {
+    &:hover {
+      background-color: rgb(255 255 255 / 0.025);
+    }
+  }
+}
+/* Hairline in the element's own text colour (tinted badges, chips). */
+@utility edge-current {
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, currentColor 18%, transparent);
+}
+/* A lit top edge for anything that should look raised without a full surface class. */
+@utility edge-lit {
+  box-shadow: var(--shadow-control);
+}
+
+@utility pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+@utility tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    background: var(--color-ink);
+    color-scheme: dark;
+  }
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background: var(--color-ink);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    overscroll-behavior-y: none;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+  button {
+    cursor: pointer;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -50% 0;
+  }
+}
+
+/* List items settling in on mount. Opacity + a few px only; never delays taps. */
+@keyframes settle {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+@utility animate-settle {
+  animation: settle 0.32s var(--ease-out-soft) both;
+}
+
+/* Board pieces sit slightly inside their squares so corner notation never touches the glyph. */
+[data-piece] > svg,
+[data-piece] > img {
+  transform: scale(0.86);
+}

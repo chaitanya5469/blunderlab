@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">BlunderLab</string>
+    <string name="title_activity_main">BlunderLab</string>
+    <string name="package_name">com.blunderlab.app</string>
+    <string name="custom_url_scheme">com.blunderlab.app</string>
+</resources>
